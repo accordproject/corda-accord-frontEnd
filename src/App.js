@@ -10,9 +10,7 @@ class App extends Component {
 
     super(props);
     this.state = {
-      cordaNodeWebAddress:'',
-      cordaNodes: [],
-      errorMessage: ''
+      promissoryNotesIssued: []
     };
 
     let onOpen = () => { console.log('Connected to the node.') };
@@ -26,23 +24,27 @@ class App extends Component {
   }
   
   async getIssuedPromissoryNotes() {
-    console.log(this.braid);
     let data = await this.braid.PromissoryNotesInterface.getIssuedPromissoryNotes();
-    console.log(data);
     this.setState({
-      promissoryNotesIssues: data
+      promissoryNotesIssued: JSON.parse(data)
     })
   }
 
   issuePromissoryNotes() {
-    console.log("clicked");
-    console.log(this.braid.flows.PromissoryNoteIssueFlow)
     let braidPromise = this.braid.flows.PromissoryNoteIssueFlow("ParticipantA", "ParticipantB");
+    this.setState({
+      loading: true
+    });
     braidPromise.then((data) => {
-      console.log("happening");
-      console.log(data)
+      console.log(data);
+      this.setState({
+        loading: false
+      });
     }).catch((error) => {
       console.log(error);
+      this.setState({
+        loading: false
+      });
     });
   }
 
@@ -55,8 +57,13 @@ class App extends Component {
             Welcome to the Bank of Corda.
           </p>
           <div>
-            <button onClick = {(() => this.issuePromissoryNotes())}>Issue Promissory Note</button>
+            {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Promissory Note</button>}
             <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
+          </div>
+          <div className = "promissory-notes">
+            {this.state.promissoryNotesIssued.map((ele) => {
+              return (<div>{ele}</div>)
+            })}
           </div>
         </header>
       </div>

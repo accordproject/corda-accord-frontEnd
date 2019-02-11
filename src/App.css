@@ -44,3 +44,11 @@ button {
 .welcome-message {
   color: #ec1d24;
 }
+
+.promissory-notes {
+  width: 50%;
+  font-size: 9px;
+  color: black;
+  overflow: scroll;
+  max-height: 50%;
+}
