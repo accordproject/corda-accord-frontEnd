@@ -24,6 +24,8 @@
 }
 
 button {
+  margin-top: 1em;
+  margin-bottom: 1em;
   border-radius: 25px;
   display: inline-block;
   padding: 14px 28px 13px 28px;
@@ -36,4 +38,9 @@ button {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: white;
+  transition: all 0.1s
+}
+
+.welcome-message {
+  color: #ec1d24;
 }
