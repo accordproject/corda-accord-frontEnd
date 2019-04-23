@@ -88,9 +88,12 @@ class App extends Component {
               {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Promissory Note</button>}
               <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
             </div>
-            {this.state.promissoryNotesIssued.map((ele) => {
-                return (<Segment inverted>{ele}</Segment>);
-            })}
+            <div>
+              {this.state.promissoryNotesIssued.map((ele) => {
+                  const id = JSON.parse(ele).LinearId;
+                  return <Segment inverted key={id}>{ele}</Segment>;
+              })}
+            </div>
           </Container>
         </header>
       </div>
