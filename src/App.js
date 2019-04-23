@@ -58,7 +58,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <Container>
+          <Container style={{ marginTop: '7em', marginBottom: '9em' }}>
             <img src={cordalogo} className="App-logo" alt="logo" />
             <img src={aplogo} className="App-logo" alt="logo" />
             <p className = "welcome-message">
