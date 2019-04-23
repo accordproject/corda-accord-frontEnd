@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import cordalogo from './cordalogo.png';
 import aplogo from './aplogo.png';
 import './App.css';
-import { Container, Segment } from 'semantic-ui-react';
+import { Container, Segment, Input, Form } from 'semantic-ui-react';
 
 const Proxy = require('braid-client').Proxy;
 
@@ -12,7 +12,9 @@ class App extends Component {
 
     super(props);
     this.state = {
-      promissoryNotesIssued: []
+      promissoryNotesIssued: [],
+      lender: "ParticipantA",
+      maker: "ParticipantB"
     };
 
     let onOpen = () => { console.log('Connected to the node.'); };
@@ -23,6 +25,8 @@ class App extends Component {
       url: 'http://localhost:9002/api/'
     }, onOpen, onClose, onError, { strictSSL: false });
 
+    this.issuePromissoryNotes = this.issuePromissoryNotes.bind(this);
+    this.getIssuedPromissoryNotes = this.getIssuedPromissoryNotes.bind(this);
   }
   
   async getIssuedPromissoryNotes() {
@@ -33,7 +37,7 @@ class App extends Component {
   }
 
   issuePromissoryNotes() {
-    let braidPromise = this.braid.flows.PromissoryNoteIssueFlow("ParticipantA", "ParticipantB");
+    let braidPromise = this.braid.flows.PromissoryNoteIssueFlow(this.state.lender, this.state.maker);
     this.setState({
       loading: true
     });
@@ -60,6 +64,26 @@ class App extends Component {
             <p className = "welcome-message">
               Welcome to the Corda & Accord Project Bank
             </p>
+            <Form>
+              <Form.Group widths='equal'>
+                <Form.Field
+                  control={Input}
+                  label="Maker"
+                  onChange={(e, input) => { this.setState({maker: input.value}); } }
+                  value={
+                      this.state.maker
+                  }
+                />
+                <Form.Field
+                  control={Input}
+                  label="Lender"
+                  onChange={(e, input) => { this.setState({lender: input.value}); } }
+                  value={
+                      this.state.lender
+                  }
+                />
+              </Form.Group>
+            </Form>
             <div>
               {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Promissory Note</button>}
               <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
