@@ -12,9 +12,7 @@ class App extends Component {
 
     super(props);
     this.state = {
-      promissoryNotesIssued: [],
-      lender: "ParticipantA",
-      maker: "ParticipantB"
+      promissoryNotesIssued: []
     };
 
     let onOpen = () => { console.log('Connected to the node.'); };
@@ -64,26 +62,6 @@ class App extends Component {
             <p className = "welcome-message">
               Welcome to the Corda & Accord Project Bank
             </p>
-            <Form>
-              <Form.Group widths='equal'>
-                <Form.Field
-                  control={Input}
-                  label="Maker"
-                  onChange={(e, input) => { this.setState({maker: input.value}); } }
-                  value={
-                      this.state.maker
-                  }
-                />
-                <Form.Field
-                  control={Input}
-                  label="Lender"
-                  onChange={(e, input) => { this.setState({lender: input.value}); } }
-                  value={
-                      this.state.lender
-                  }
-                />
-              </Form.Group>
-            </Form>
             <div>
               {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Promissory Note</button>}
               <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
