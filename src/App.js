@@ -37,7 +37,7 @@ class App extends Component {
   }
 
   issuePromissoryNotes() {
-    let braidPromise = this.braid.flows.PromissoryNoteIssueFlow(this.state.lender, this.state.maker);
+    let braidPromise = this.braid.flows.PromissoryNoteIssueFlow();
     this.setState({
       loading: true
     });
