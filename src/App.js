@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-import cordalogo from './cordalogo.png';
-import aplogo from './aplogo.png';
 import './App.css';
 
-import { Container, Segment, Form } from 'semantic-ui-react';
+import { Container, Segment, Form, Image, Header } from 'semantic-ui-react';
 import { Proxy } from'braid-client';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
@@ -135,33 +133,31 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <Container style={{ marginTop: '7em', marginBottom: '9em' }}>
-            <img src={cordalogo} className="App-logo" alt="logo" />
-            <img src={aplogo} className="App-logo" alt="logo" />
-            <p className = "welcome-message">
-              Welcome to the Corda & Accord Project Bank
-            </p>
-            <div>
-              <Form>
-                <Form.TextArea label='Promissory Note'
-                               value={this.state.contractText}
-                               onChange={(event,data) => this.setState({contractText : data.value})} />
-                {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Note from Disc</button>}
-                {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotesJSON())}>Issue Note from Form</button>}
-                <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
-              </Form>
-            </div>
-            <div>
-              {this.state.promissoryNotesIssued.map((ele) => {
-                  const id = JSON.parse(ele).LinearId;
-                  return <Segment inverted key={id}>{ele}</Segment>;
-              })}
-            </div>
-          </Container>
-        </header>
-      </div>
+      <Container className="App" style={{ marginTop: '3em', marginBottom: '3em' }}>
+        <Image.Group size='small'>
+          <Image src="static/cordalogo.png" />
+          <Image src="static/aplogo.png" />
+        </Image.Group>
+        <Header as='h1' color="red">
+          Welcome to the Corda & Accord Project Bank
+        </Header>
+        <div>
+          <Form>
+            <Form.TextArea label="Contract Text"
+                           rows="25"
+                           value={this.state.contractText}
+                           onChange={(event,data) => this.setState({contractText : data.value})} />
+            {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotesJSON())}>Issue Note</button>}
+            <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
+          </Form>
+        </div>
+        <div>
+          {this.state.promissoryNotesIssued.map((ele) => {
+            const id = JSON.parse(ele).LinearId;
+            return <Segment inverted key={id}>{ele}</Segment>;
+          })}
+        </div>
+      </Container>
     );
   }
 }
