@@ -15,33 +15,8 @@ class App extends Component {
     super(props);
     this.state = {
       promissoryNotesIssued: [],
-      contractText: 'THIS IS THE CONTRACT',
-      jsonData: JSON.stringify({
-        '$class': 'org.accordproject.promissorynote.PromissoryNoteContract',
-        'contractId': '157c367c-b39a-43bc-b260-07329b236ce3',
-        'amount': {
-          '$class': 'org.accordproject.money.MonetaryAmount',
-          'doubleValue': 1000,
-          'currencyCode': 'USD'
-        },
-        'date': '2018-01-30',
-        'maker': 'Daniel Selman',
-        'interestRate': 3.8,
-        'individual': true,
-        'makerAddress': '1 Main Street',
-        'lender': 'Clause',
-        'legalEntity': 'CORP',
-        'lenderAddress': '246 5th Ave, 3rd Fl, New York, NY 10001',
-        'principal': {
-          '$class': 'org.accordproject.money.MonetaryAmount',
-          'doubleValue': 500,
-          'currencyCode': 'USD'
-        },
-        'maturityDate': '2019-01-20',
-        'defaultDays': 90,
-        'insolvencyDays': 90,
-        'jurisdiction': 'New York, NY'
-      })
+      contractText: 'Contract not loaded...',
+      jsonData: 'null'
     };
 
     let onOpen = () => { console.log('Connected to the node.'); };
