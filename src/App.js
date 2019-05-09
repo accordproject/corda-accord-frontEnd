@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+
 import cordalogo from './cordalogo.png';
 import aplogo from './aplogo.png';
 import './App.css';
-import { Container, Segment } from 'semantic-ui-react';
 
-const Proxy = require('braid-client').Proxy;
+import { Container, Segment, Form } from 'semantic-ui-react';
+import { Proxy } from'braid-client';
+import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
+
+const DEFAULT_TEMPLATE = `https://templates.accordproject.org/archives/promissory-note@0.11.1.cta`;
 
 class App extends Component {
 
@@ -53,6 +57,34 @@ class App extends Component {
     this.issuePromissoryNotes = this.issuePromissoryNotes.bind(this);
     this.issuePromissoryNotesJSON = this.issuePromissoryNotesJSON.bind(this);
     this.getIssuedPromissoryNotes = this.getIssuedPromissoryNotes.bind(this);
+
+    this.loadTemplateFromUrl = this.loadTemplateFromUrl.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadTemplateFromUrl(DEFAULT_TEMPLATE);
+  }
+
+  loadTemplateFromUrl(templateURL) {
+    console.log(`Loading template:  ${templateURL}`);
+    let newState = {};
+    let promisedTemplate;
+    try {
+      promisedTemplate = Template.fromUrl(templateURL);
+    } catch (error) {
+      console.log(`LOAD FAILED! ${error.message}`); // Error!
+      return false;
+    }
+    return promisedTemplate.then((template) => {
+      newState.clause = new Clause(template);
+      newState.contractText = template.getMetadata().getSamples().default;
+      newState.jsonData = 'null';
+      this.setState(newState);
+      return true;
+    }, (reason) => {
+      console.log(`LOAD FAILED! ${reason.message}`); // Error!
+      return false;
+    });
   }
 
   async getIssuedPromissoryNotes() {
@@ -81,7 +113,10 @@ class App extends Component {
   }
 
   issuePromissoryNotesJSON() {
-    let braidPromise = this.braid.flows.PromissoryNoteIssueJSONFlow(this.state.contractText, this.state.jsonData);
+    const clause = this.state.clause;
+    clause.parse(this.state.contractText);
+    const jsonData = JSON.stringify(clause.getData(), null, 2);
+    let braidPromise = this.braid.flows.PromissoryNoteIssueJSONFlow(this.state.contractText, jsonData);
     this.setState({
       loading: true
     });
@@ -109,9 +144,14 @@ class App extends Component {
               Welcome to the Corda & Accord Project Bank
             </p>
             <div>
-              {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Promissory Note</button>}
-              {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotesJSON())}>Issue Promissory Note from Data</button>}
-              <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
+              <Form>
+                <Form.TextArea label='Promissory Note'
+                               value={this.state.contractText}
+                               onChange={(event,data) => this.setState({contractText : data.value})} />
+                {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotes())}>Issue Note from Disc</button>}
+                {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotesJSON())}>Issue Note from Form</button>}
+                <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
+              </Form>
             </div>
             <div>
               {this.state.promissoryNotesIssued.map((ele) => {
