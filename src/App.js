@@ -15,13 +15,17 @@ class App extends Component {
     super(props);
     this.state = {
       promissoryNotesIssued: [],
+      owner: '',
       contractText: 'Contract not loaded...',
       jsonData: 'null'
     };
 
-    let onOpen = () => { console.log('Connected to the node.'); };
-    let onClose = () => { console.log('Disconnected from node.'); };
-    let onError = (err) => { console.error(err); } ;
+    const onOpen = () => {
+      this.getOwner();
+      console.log('Connected to the node.');
+    };
+    const onClose = () => { console.log('Disconnected from node.'); };
+    const onError = (err) => { console.error(err); } ;
 
     this.braid = new Proxy({
       url: 'http://localhost:9002/api/'
@@ -30,6 +34,7 @@ class App extends Component {
     this.issuePromissoryNotes = this.issuePromissoryNotes.bind(this);
     this.issuePromissoryNotesJSON = this.issuePromissoryNotesJSON.bind(this);
     this.getIssuedPromissoryNotes = this.getIssuedPromissoryNotes.bind(this);
+    this.getOwner = this.getOwner.bind(this);
 
     this.loadTemplateFromUrl = this.loadTemplateFromUrl.bind(this);
   }
@@ -62,8 +67,16 @@ class App extends Component {
 
   async getIssuedPromissoryNotes() {
     let data = await this.braid.PromissoryNotesInterface.getIssuedPromissoryNotes();
+    console.log('DATA' + JSON.stringify(data));
     this.setState({
       promissoryNotesIssued: JSON.parse(data)
+    });
+  }
+
+  async getOwner() {
+    let data = await this.braid.PromissoryNotesInterface.getOwner();
+    this.setState({
+      owner: data
     });
   }
 
@@ -116,14 +129,17 @@ class App extends Component {
         <Header as='h1' color="red">
           Welcome to the Corda & Accord Project Bank
         </Header>
+        <Header as='h3' color="red">
+          ({ this.state.owner })
+        </Header>
         <div>
           <Form>
             <Form.TextArea label="Contract Text"
                            rows="25"
                            value={this.state.contractText}
                            onChange={(event,data) => this.setState({contractText : data.value})} />
-            {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotesJSON())}>Issue Note</button>}
-            <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get Promissory Notes</button>
+            {this.state.loading ? <button>Talking to the node...</button> : <button onClick = {(() => this.issuePromissoryNotesJSON())}>Issue New Note</button>}
+            <button onClick = {(() => this.getIssuedPromissoryNotes())}>Get All Existing Notes</button>
           </Form>
         </div>
         <div>
