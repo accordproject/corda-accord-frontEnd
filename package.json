@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@accordproject/cicero-core": "0.12.2",
-    "@accordproject/cicero-ui": "0.0.10",
+    "@accordproject/cicero-core": "0.12.3",
+    "@accordproject/cicero-ui": "0.0.11-20190516200226",
     "axios": "^0.18.0",
     "babel-runtime": "^6.26.0",
     "braid": "0.0.1",
