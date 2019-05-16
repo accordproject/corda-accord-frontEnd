@@ -2,7 +2,14 @@ import React, { Component, useCallback } from 'react';
 
 import './App.css';
 
-import { Container, Segment, Form, Image, Header, Divider, Button, Menu } from 'semantic-ui-react';
+import { Container,
+         Segment,
+         Form,
+         Image,
+         Header,
+         Button,
+         Menu,
+         Table } from 'semantic-ui-react';
 import { Proxy } from'braid-client';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 import { TemplateLoadingClauseEditor } from '@accordproject/cicero-ui';
@@ -176,10 +183,26 @@ class App extends Component {
                    onParse={(jsonData) => { this.setState({ jsonData: JSON.stringify(jsonData) }); }}
                  />
                </div> :
-               this.state.promissoryNotesIssued.map((ele) => {
-                 const id = JSON.parse(ele).LinearId;
-                 return <Segment inverted key={id}>{ele}</Segment>;
-               }) }
+               <Table celled>
+               <Table.Header>
+               <Table.Row>
+               <Table.HeaderCell>Maker</Table.HeaderCell>
+               <Table.HeaderCell>Issuer</Table.HeaderCell>
+               <Table.HeaderCell>Amount</Table.HeaderCell>
+               </Table.Row>
+               </Table.Header>
+                 {
+                   this.state.promissoryNotesIssued.map((ele) => {
+                     const data =JSON.parse(ele);
+                     const id = data.LinearId;
+                     return <Table.Row>
+                              <Table.Cell inverted>{data.MakerCordaParty}</Table.Cell>
+                              <Table.Cell inverted>{data.LenderCordaParty}</Table.Cell>
+                              <Table.Cell inverted>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
+                            </Table.Row>; })
+                 }
+               </Table>
+             }
            </Segment>
         </div>
       </Container>
