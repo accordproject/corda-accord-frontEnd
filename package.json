@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@accordproject/cicero-core": "0.12.2",
+    "@accordproject/cicero-ui": "0.0.10",
     "axios": "^0.18.0",
     "babel-runtime": "^6.26.0",
     "braid": "0.0.1",
@@ -14,7 +15,7 @@
     "re-resizable": "^4.9.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "react-dom": "^16.6.0",
+    "react-dom": "^16.8.6",
     "react-codemirror2": "^5.1.0",
     "react-filepond": "^5.0.0",
     "react-inspector": "^2.3.0",
