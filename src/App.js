@@ -192,17 +192,19 @@ class App extends Component {
                <Table.HeaderCell>Issued</Table.HeaderCell>
                </Table.Row>
                </Table.Header>
+               <Table.Body>
                  {
                    this.state.promissoryNotesIssued.map((ele) => {
                      const data =JSON.parse(ele);
                      const id = data.LinearId;
-                     return <Table.Row>
-                              <Table.Cell inverted>{data.MakerCordaParty}</Table.Cell>
-                              <Table.Cell inverted>{data.LenderCordaParty}</Table.Cell>
-                              <Table.Cell inverted>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
-                              <Table.Cell inverted>{data.IssuedOn}</Table.Cell>
+                     return <Table.Row key={id}>
+                              <Table.Cell>{data.MakerCordaParty}</Table.Cell>
+                              <Table.Cell>{data.LenderCordaParty}</Table.Cell>
+                              <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
+                              <Table.Cell>{data.IssuedOn}</Table.Cell>
                             </Table.Row>; })
                  }
+               </Table.Body>
                </Table>
              }
            </Segment>
