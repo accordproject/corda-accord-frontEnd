@@ -189,6 +189,7 @@ class App extends Component {
                <Table.HeaderCell>Maker</Table.HeaderCell>
                <Table.HeaderCell>Issuer</Table.HeaderCell>
                <Table.HeaderCell>Amount</Table.HeaderCell>
+               <Table.HeaderCell>Issued</Table.HeaderCell>
                </Table.Row>
                </Table.Header>
                  {
@@ -199,6 +200,7 @@ class App extends Component {
                               <Table.Cell inverted>{data.MakerCordaParty}</Table.Cell>
                               <Table.Cell inverted>{data.LenderCordaParty}</Table.Cell>
                               <Table.Cell inverted>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
+                              <Table.Cell inverted>{data.IssuedOn}</Table.Cell>
                             </Table.Row>; })
                  }
                </Table>
