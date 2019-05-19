@@ -73,7 +73,7 @@ class App extends Component {
     const onError = (err) => { console.error(err); } ;
 
     this.braid = new Proxy({
-      url: 'http://localhost:9002/api/'
+      url: 'http://localhost:9007/api/'
     }, onOpen, onClose, onError, { strictSSL: false });
 
     this.issuePromissoryNotes = this.issuePromissoryNotes.bind(this);
