@@ -73,7 +73,6 @@ class App extends Component {
 
     this.componentDidMount = this.componentDidMount.bind(this);
     this.connectToBraid = this.connectToBraid.bind(this);
-    this.issuePromissoryNotes = this.issuePromissoryNotes.bind(this);
     this.issuePromissoryNotesJSON = this.issuePromissoryNotesJSON.bind(this);
     this.getIssuedPromissoryNotes = this.getIssuedPromissoryNotes.bind(this);
     this.getOwner = this.getOwner.bind(this);
@@ -113,26 +112,9 @@ class App extends Component {
     });
   }
 
-  issuePromissoryNotes() {
-    let braidPromise = this.braid.flows.PromissoryNoteIssueFlow();
-    this.setState({
-      loading: true
-    });
-    braidPromise.then((data) => {
-      console.log(data);
-      this.setState({
-        loading: false
-      });
-    }).catch((error) => {
-      console.log(error);
-      this.setState({
-        loading: false
-      });
-    });
-  }
-
   issuePromissoryNotesJSON() {
     const { jsonData, contractText } = this.state;
+    console.log(`ISSUING Note with data: ${JSON.stringify(jsonData)}`);
     let braidPromise = this.braid.flows.PromissoryNoteIssueJSONFlow(contractText, jsonData);
     this.setState({
       loading: true
@@ -183,6 +165,7 @@ class App extends Component {
               name='records'
               active={!this.state.issuing}
               onClick={(() => {
+                this.getIssuedPromissoryNotes();
                 this.setState({ issuing: false });
               })}
             >
