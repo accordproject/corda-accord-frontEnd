@@ -3,6 +3,7 @@ import React, { Component, useCallback } from 'react';
 import './App.css';
 
 import { Container,
+         Dropdown,
          Segment,
          Form,
          Image,
@@ -16,6 +17,11 @@ import { TemplateLoadingClauseEditor } from '@accordproject/cicero-ui';
 import initialMarkdown from './initialMarkdown';
 
 const DEFAULT_TEMPLATE = 'http://localhost:8080/static/promissory-note@0.11.2.cta';
+const CORDA_NODES = [{key:"O=Notary,L=London,C=GB",text:"O=Notary,L=London,C=GB",value:9003},
+                     {key:"O=Daniel,L=NY,C=US",text:"O=Daniel,L=NY,C=US",value:9005},
+                     {key:"O=Clause Inc., L=NY, C=US",text:"O=Clause Inc., L=NY, C=US",value:9007},
+                     {key:"O=Jason,L=NY,C=US",text:"O=Jason,L=NY,C=US",value:9009},
+                     {key:"O=R3 LLC, L=NY, C=US",text:"O=R3 LLC, L=NY, C=US",value:9011}];
 
 /**
  * A demo component that uses TemplateLoadingClauseEditor
@@ -65,17 +71,8 @@ class App extends Component {
       jsonData: 'null',
     };
 
-    const onOpen = () => {
-      this.getOwner();
-      console.log('Connected to the node.');
-    };
-    const onClose = () => { console.log('Disconnected from node.'); };
-    const onError = (err) => { console.error(err); } ;
-
-    this.braid = new Proxy({
-      url: 'http://localhost:9007/api/'
-    }, onOpen, onClose, onError, { strictSSL: false });
-
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.connectToBraid = this.connectToBraid.bind(this);
     this.issuePromissoryNotes = this.issuePromissoryNotes.bind(this);
     this.issuePromissoryNotesJSON = this.issuePromissoryNotesJSON.bind(this);
     this.getIssuedPromissoryNotes = this.getIssuedPromissoryNotes.bind(this);
@@ -83,9 +80,27 @@ class App extends Component {
 
   }
 
+  async connectToBraid(port) {
+    const onOpen = () => {
+      this.getOwner();
+      this.getIssuedPromissoryNotes();
+      console.log('Connected to the node.');
+    };
+    const onClose = () => { console.log('Disconnected from node.'); };
+    const onError = (err) => { console.error(err); } ;
+
+    this.braid = new Proxy({
+      url: `http://localhost:${port}/api/`
+    }, onOpen, onClose, onError, { strictSSL: false });
+  }
+
+  componentDidMount() {
+    this.connectToBraid(9003);
+  }
+  
   async getIssuedPromissoryNotes() {
     let data = await this.braid.PromissoryNotesInterface.getIssuedPromissoryNotes();
-    console.log('DATA' + JSON.stringify(data));
+    console.log('NEW DATA' + JSON.stringify(data));
     this.setState({
       promissoryNotesIssued: JSON.parse(data)
     });
@@ -146,7 +161,14 @@ class App extends Component {
           Welcome to the Corda & Accord Project Bank
         </Header>
         <Header as='h3' color="red">
-          ({ this.state.owner })
+          <Dropdown
+            onChange={((event, data) => {
+              console.log('switching to node: ' + JSON.stringify(data.value));
+              this.connectToBraid(data.value);
+            })}
+            options={CORDA_NODES}
+            defaultValue={CORDA_NODES[0].value}
+          />
         </Header>
         <div>
           <Menu color='red'>
@@ -162,7 +184,6 @@ class App extends Component {
               active={!this.state.issuing}
               onClick={(() => {
                 this.setState({ issuing: false });
-                this.getIssuedPromissoryNotes();
               })}
             >
               Notes Records
