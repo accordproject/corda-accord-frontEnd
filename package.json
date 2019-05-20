@@ -1,6 +1,11 @@
 {
   "name": "cordaandapbank",
   "version": "0.1.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogersanick/corda-accord-frontEnd.git"
+  },
   "private": true,
   "dependencies": {
     "@accordproject/cicero-core": "0.12.3",
@@ -71,5 +76,10 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
+  ],
+  "keywords": [
+    "corda",
+    "accord",
+    "legal"
   ]
 }
