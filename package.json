@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@accordproject/cicero-core": "0.12.3",
-    "@accordproject/cicero-ui": "0.0.11-20190516200226",
+    "@accordproject/cicero-ui": "0.0.11",
     "axios": "^0.18.0",
     "babel-runtime": "^6.26.0",
     "braid": "0.0.1",
