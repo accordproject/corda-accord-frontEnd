@@ -101,10 +101,10 @@ const issuedPane = (issued, owner) => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>By</Table.HeaderCell>
-            <Table.HeaderCell>Amount</Table.HeaderCell>
+            <Table.HeaderCell>Principal</Table.HeaderCell>
             <Table.HeaderCell>Issued</Table.HeaderCell>
             <Table.HeaderCell>Maturity</Table.HeaderCell>
-            <Table.HeaderCell>Contract</Table.HeaderCell>
+            <Table.HeaderCell>Contract Text</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -136,10 +136,10 @@ const issuedPane = (issued, owner) => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>To</Table.HeaderCell>
-            <Table.HeaderCell>Amount</Table.HeaderCell>
+            <Table.HeaderCell>Principal</Table.HeaderCell>
             <Table.HeaderCell>Issued</Table.HeaderCell>
             <Table.HeaderCell>Maturity</Table.HeaderCell>
-            <Table.HeaderCell>Contract</Table.HeaderCell>
+            <Table.HeaderCell>Contract Text</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
