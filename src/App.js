@@ -18,6 +18,7 @@ import { Proxy } from'braid-client';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 import { TemplateLoadingClauseEditor } from '@accordproject/cicero-ui';
 import initialMarkdown from './initialMarkdown';
+import moment from 'moment-mini';
 
 const DEFAULT_TEMPLATE = 'http://localhost:8080/static/promissory-note@0.11.2.cta';
 const CORDA_NODES = [{key:"O=Notary,L=London,C=GB",text:"O=Notary,L=London,C=GB",value:9003,initialMarkdown:initialMarkdown("Notary")},
@@ -68,9 +69,14 @@ const PromissoryNoteEditor = (props) => {
   );
 }
 
+const formatDate = (date) => {
+  const thisDate = moment(date).add(1,'days');
+  return thisDate.format('MMMM DD, YYYY');
+};
+
 const AttachmentModal = (contractText, date) => (
   <Modal trigger={<Button compact fluid color='green' size='mini'>Retrieve</Button>}>
-    <Modal.Header>As Issued On {date}</Modal.Header>
+    <Modal.Header>As Issued On {formatDate(date)}</Modal.Header>
     <Modal.Content>
       <PromissoryNoteEditor
         lockText={true}
@@ -110,8 +116,8 @@ const issuedPane = (issued, owner) => {
                 return <Table.Row key={id}>
                          <Table.Cell>{data.MakerCordaParty}</Table.Cell>
                          <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
-                         <Table.Cell>{data.IssuedOn}</Table.Cell>
-                         <Table.Cell>{data.MaturityDate}</Table.Cell>
+                         <Table.Cell>{formatDate(data.IssuedOn)}</Table.Cell>
+                         <Table.Cell>{formatDate(data.MaturityDate)}</Table.Cell>
                          <Table.Cell>{AttachmentModal(data.ContractText, data.IssuedOn)}</Table.Cell>
                        </Table.Row>;
               } else {
@@ -145,8 +151,8 @@ const issuedPane = (issued, owner) => {
                 return <Table.Row key={id}>
                          <Table.Cell>{data.LenderCordaParty}</Table.Cell>
                          <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
-                         <Table.Cell>{data.IssuedOn}</Table.Cell>
-                         <Table.Cell>{data.MaturityDate}</Table.Cell>
+                         <Table.Cell>{formatDate(data.IssuedOn)}</Table.Cell>
+                         <Table.Cell>{formatDate(data.MaturityDate)}</Table.Cell>
                          <Table.Cell>{AttachmentModal(data.ContractText, data.IssuedOn)}</Table.Cell>
                        </Table.Row>;
               } else {
