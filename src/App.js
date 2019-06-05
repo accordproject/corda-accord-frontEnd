@@ -10,7 +10,8 @@ import { Container,
          Header,
          Button,
          Menu,
-         Table } from 'semantic-ui-react';
+         Table,
+         Modal, } from 'semantic-ui-react';
 import { Proxy } from'braid-client';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 import { TemplateLoadingClauseEditor } from '@accordproject/cicero-ui';
@@ -28,7 +29,7 @@ const CORDA_NODES = [{key:"O=Notary,L=London,C=GB",text:"O=Notary,L=London,C=GB"
  * @param {*} props
  */
 // eslint-disable-next-line require-jsdoc, no-unused-vars
-function PromissoryNoteEditor(props) {
+const PromissoryNoteEditor = (props) => {
   /**
    * Called when the data in the editor has been modified
    */
@@ -46,17 +47,107 @@ function PromissoryNoteEditor(props) {
   return (
       <div>
         <TemplateLoadingClauseEditor
-          lockText={false}
+          lockText={props.lockText}
           markdown={props.initialMarkdown}
           templateUrl={DEFAULT_TEMPLATE}
           onChange={onChange}
           onParse={onParse}
           showEditButton={false}
           showMessage={false}
+          showParse={props.showParse}
         />
       </div>
   );
 }
+
+const ModalModalExample = (contractText, date) => (
+  <Modal trigger={<Button>Show</Button>}>
+    <Modal.Header>As Issued On {date}</Modal.Header>
+    <Modal.Content>
+      <PromissoryNoteEditor
+        lockText={true}
+        initialMarkdown={ contractText }
+        onChange={(value,contractText) => { }}
+        onParse={(jsonData) => { }}
+        showParse={false}
+      />
+    </Modal.Content>
+  </Modal>
+);
+
+const issuedPane = (issued, owner) => {
+  return (
+    <div>
+      <Table celled color="green" key="owed" compact='very'>
+        <Table.Header fullWidth>
+          <Table.Row>
+            <Table.HeaderCell colSpan='4'>Owed</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>By</Table.HeaderCell>
+            <Table.HeaderCell>Amount</Table.HeaderCell>
+            <Table.HeaderCell>Issued</Table.HeaderCell>
+            <Table.HeaderCell>Contract</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {
+            issued.map((ele) => {
+              const data =JSON.parse(ele);
+              if (data.LenderCordaParty === owner) {
+                const id = data.LinearId;
+                return <Table.Row key={id}>
+                         <Table.Cell>{data.MakerCordaParty}</Table.Cell>
+                         <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
+                         <Table.Cell>{data.IssuedOn}</Table.Cell>
+                         <Table.Cell>{ModalModalExample(data.ContractText, data.IssuedOn)}</Table.Cell>
+                       </Table.Row>;
+              } else {
+                return null;
+              }
+            })
+          }
+        </Table.Body>
+      </Table>
+      <Table celled color="red" key="due" compact='very'>
+        <Table.Header fullWidth>
+          <Table.Row>
+            <Table.HeaderCell colSpan='4'>Due</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>To</Table.HeaderCell>
+            <Table.HeaderCell>Amount</Table.HeaderCell>
+            <Table.HeaderCell>Issued</Table.HeaderCell>
+            <Table.HeaderCell>Contract</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {
+            issued.map((ele) => {
+              const data =JSON.parse(ele);
+              if (data.MakerCordaParty === owner) {
+                const id = data.LinearId;
+                return <Table.Row key={id}>
+                         <Table.Cell>{data.LenderCordaParty}</Table.Cell>
+                         <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
+                         <Table.Cell>{data.IssuedOn}</Table.Cell>
+                         <Table.Cell>{ModalModalExample(data.ContractText, data.IssuedOn)}</Table.Cell>
+                       </Table.Row>;
+              } else {
+                return null;
+              }
+            })
+          }
+        </Table.Body>
+      </Table>
+    </div>
+  );
+}
+
 class App extends Component {
 
   constructor(props) {
@@ -99,7 +190,7 @@ class App extends Component {
   
   async getIssuedPromissoryNotes() {
     let data = await this.braid.PromissoryNotesInterface.getIssuedPromissoryNotes();
-    console.log('NEW DATA' + JSON.stringify(data));
+    //console.log('NEW DATA' + JSON.stringify(data));
     this.setState({
       promissoryNotesIssued: JSON.parse(data)
     });
@@ -114,13 +205,13 @@ class App extends Component {
 
   issuePromissoryNotesJSON() {
     const { jsonData, contractText } = this.state;
-    console.log(`ISSUING Note with data: ${JSON.stringify(jsonData)}`);
+    //console.log(`ISSUING Note with data: ${JSON.stringify(jsonData)}`);
     let braidPromise = this.braid.flows.PromissoryNoteIssueJSONFlow(contractText, jsonData);
     this.setState({
       loading: true
     });
     braidPromise.then((data) => {
-      console.log(data);
+      //console.log(data);
       this.setState({
         loading: false
       });
@@ -182,34 +273,13 @@ class App extends Component {
                            color='red'
                            onClick = {(() => this.issuePromissoryNotesJSON())}>Sign & Issue</Button> }
                  <PromissoryNoteEditor
+                   lockText={false}
                    initialMarkdown={ this.state.contractText }
                    onChange={(value,contractText) => { this.setState({ contractText }); }}
                    onParse={(jsonData) => { this.setState({ jsonData: JSON.stringify(jsonData) }); }}
+                   showParse={true}
                  />
-               </div> :
-               <Table celled>
-               <Table.Header>
-               <Table.Row>
-               <Table.HeaderCell>Maker</Table.HeaderCell>
-               <Table.HeaderCell>Issuer</Table.HeaderCell>
-               <Table.HeaderCell>Amount</Table.HeaderCell>
-               <Table.HeaderCell>Issued</Table.HeaderCell>
-               </Table.Row>
-               </Table.Header>
-               <Table.Body>
-                 {
-                   this.state.promissoryNotesIssued.map((ele) => {
-                     const data =JSON.parse(ele);
-                     const id = data.LinearId;
-                     return <Table.Row key={id}>
-                              <Table.Cell>{data.MakerCordaParty}</Table.Cell>
-                              <Table.Cell>{data.LenderCordaParty}</Table.Cell>
-                              <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
-                              <Table.Cell>{data.IssuedOn}</Table.Cell>
-                            </Table.Row>; })
-                 }
-               </Table.Body>
-               </Table>
+               </div> : issuedPane(this.state.promissoryNotesIssued, this.state.owner)
              }
            </Segment>
         </div>
