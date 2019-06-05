@@ -1,8 +1,8 @@
-const initialMarkdown = `# PROMISSORY NOTE
+const initialMarkdown = (maker) => `# PROMISSORY NOTE
 
-**1000 USD** **01/30/2018**
+**1000 USD** **06/06/2019**
 
-FOR VALUE RECEIVED, the undersigned, **"Daniel"**, an **individual residing** at **"1 Main Street"** (“Maker”), hereby promises to pay to the order of **"R3 LLC"**, a **CORP**, having offices at **"11 West 42nd Street, 8th Floor, New York, NY 10036"**, or its successors and permitted assigns (“Lender” or the “Company”), the principal sum of **500 USD**, plus any and all interest accrued thereon at the Note Rate (defined below), each due and payable in cash in lawful money of the United States on the dates and in the manner set forth in this Promissory Note (this “Note”).
+FOR VALUE RECEIVED, the undersigned, **"${maker}"**, an **individual residing** at **"1 Main Street"** (“Maker”), hereby promises to pay to the order of **"R3 LLC"**, a **CORP**, having offices at **"11 West 42nd Street, 8th Floor, New York, NY 10036"**, or its successors and permitted assigns (“Lender” or the “Company”), the principal sum of **500 USD**, plus any and all interest accrued thereon at the Note Rate (defined below), each due and payable in cash in lawful money of the United States on the dates and in the manner set forth in this Promissory Note (this “Note”).
 
 ## Interest.
 
@@ -10,7 +10,7 @@ The principal amount of this Note shall bear interest at **3.8**% per annum (the
 
 ## Payment of Principal and Interest.
 
-The principal amount of this Note and the interest thereon shall be due and payable in full on the earlier of (a) **01/20/2019** or (b) ten (10) days prior to the Company filing an S-1 registration statement with the U.S. Securities and Exchange Commission in contemplation of an initial public offering (“IPO”). As used herein, IPO means the closing of a firm commitment underwritten public offering pursuant to a registration statement under the Securities Act of 1933, as amended.
+The principal amount of this Note and the interest thereon shall be due and payable in full on the earlier of (a) **10/20/2019** or (b) ten (10) days prior to the Company filing an S-1 registration statement with the U.S. Securities and Exchange Commission in contemplation of an initial public offering (“IPO”). As used herein, IPO means the closing of a firm commitment underwritten public offering pursuant to a registration statement under the Securities Act of 1933, as amended.
 
 ## Prepayment.
 

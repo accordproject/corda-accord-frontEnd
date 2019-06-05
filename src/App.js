@@ -11,18 +11,26 @@ import { Container,
          Button,
          Menu,
          Table,
-         Modal, } from 'semantic-ui-react';
+         Modal,
+         Dimmer,
+         Loader, } from 'semantic-ui-react';
 import { Proxy } from'braid-client';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 import { TemplateLoadingClauseEditor } from '@accordproject/cicero-ui';
 import initialMarkdown from './initialMarkdown';
 
 const DEFAULT_TEMPLATE = 'http://localhost:8080/static/promissory-note@0.11.2.cta';
-const CORDA_NODES = [{key:"O=Notary,L=London,C=GB",text:"O=Notary,L=London,C=GB",value:9003},
-                     {key:"O=Daniel,L=NY,C=US",text:"O=Daniel,L=NY,C=US",value:9005},
-                     {key:"O=Clause Inc., L=NY, C=US",text:"O=Clause Inc., L=NY, C=US",value:9007},
-                     {key:"O=Jason,L=NY,C=US",text:"O=Jason,L=NY,C=US",value:9009},
-                     {key:"O=R3 LLC, L=NY, C=US",text:"O=R3 LLC, L=NY, C=US",value:9011}];
+const CORDA_NODES = [{key:"O=Notary,L=London,C=GB",text:"O=Notary,L=London,C=GB",value:9003,initialMarkdown:initialMarkdown("Notary")},
+                     {key:"O=Daniel,L=NY,C=US",text:"O=Daniel,L=NY,C=US",value:9005,initialMarkdown:initialMarkdown("Daniel")},
+                     {key:"O=Clause Inc., L=NY, C=US",text:"O=Clause Inc., L=NY, C=US",value:9007,initialMarkdown:initialMarkdown("Clause Inc.")},
+                     {key:"O=Jason,L=NY,C=US",text:"O=Jason,L=NY,C=US",value:9009,initialMarkdown:initialMarkdown("Jason")},
+                     {key:"O=R3 LLC, L=NY, C=US",text:"O=R3 LLC, L=NY, C=US",value:9011,initialMarkdown:initialMarkdown("R3 LLC")}];
+const seedMarkdown = (port) => {
+  return CORDA_NODES.find(function(element) {
+    return element.value === port;
+  }).initialMarkdown;
+};
+const nodesTable = CORDA_NODES.map((element) => { return { key: element.key, text: element.text, value: element.value }; });
 
 /**
  * A demo component that uses TemplateLoadingClauseEditor
@@ -60,8 +68,8 @@ const PromissoryNoteEditor = (props) => {
   );
 }
 
-const ModalModalExample = (contractText, date) => (
-  <Modal trigger={<Button>Show</Button>}>
+const AttachmentModal = (contractText, date) => (
+  <Modal trigger={<Button compact fluid color='green' size='mini'>Retrieve</Button>}>
     <Modal.Header>As Issued On {date}</Modal.Header>
     <Modal.Content>
       <PromissoryNoteEditor
@@ -81,7 +89,7 @@ const issuedPane = (issued, owner) => {
       <Table celled color="green" key="owed" compact='very'>
         <Table.Header fullWidth>
           <Table.Row>
-            <Table.HeaderCell colSpan='4'>Owed</Table.HeaderCell>
+            <Table.HeaderCell colSpan='5'>Owed</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Header>
@@ -89,6 +97,7 @@ const issuedPane = (issued, owner) => {
             <Table.HeaderCell>By</Table.HeaderCell>
             <Table.HeaderCell>Amount</Table.HeaderCell>
             <Table.HeaderCell>Issued</Table.HeaderCell>
+            <Table.HeaderCell>Maturity</Table.HeaderCell>
             <Table.HeaderCell>Contract</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -102,7 +111,8 @@ const issuedPane = (issued, owner) => {
                          <Table.Cell>{data.MakerCordaParty}</Table.Cell>
                          <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
                          <Table.Cell>{data.IssuedOn}</Table.Cell>
-                         <Table.Cell>{ModalModalExample(data.ContractText, data.IssuedOn)}</Table.Cell>
+                         <Table.Cell>{data.MaturityDate}</Table.Cell>
+                         <Table.Cell>{AttachmentModal(data.ContractText, data.IssuedOn)}</Table.Cell>
                        </Table.Row>;
               } else {
                 return null;
@@ -114,7 +124,7 @@ const issuedPane = (issued, owner) => {
       <Table celled color="red" key="due" compact='very'>
         <Table.Header fullWidth>
           <Table.Row>
-            <Table.HeaderCell colSpan='4'>Due</Table.HeaderCell>
+            <Table.HeaderCell colSpan='5'>Due</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Header>
@@ -122,6 +132,7 @@ const issuedPane = (issued, owner) => {
             <Table.HeaderCell>To</Table.HeaderCell>
             <Table.HeaderCell>Amount</Table.HeaderCell>
             <Table.HeaderCell>Issued</Table.HeaderCell>
+            <Table.HeaderCell>Maturity</Table.HeaderCell>
             <Table.HeaderCell>Contract</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -135,7 +146,8 @@ const issuedPane = (issued, owner) => {
                          <Table.Cell>{data.LenderCordaParty}</Table.Cell>
                          <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
                          <Table.Cell>{data.IssuedOn}</Table.Cell>
-                         <Table.Cell>{ModalModalExample(data.ContractText, data.IssuedOn)}</Table.Cell>
+                         <Table.Cell>{data.MaturityDate}</Table.Cell>
+                         <Table.Cell>{AttachmentModal(data.ContractText, data.IssuedOn)}</Table.Cell>
                        </Table.Row>;
               } else {
                 return null;
@@ -158,8 +170,9 @@ class App extends Component {
       issuing: true,
       promissoryNotesIssued: [],
       owner: '',
-      contractText: initialMarkdown,
+      contractText: initialMarkdown("Daniel"),
       jsonData: 'null',
+      active: false,
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -174,6 +187,7 @@ class App extends Component {
     const onOpen = () => {
       this.getOwner();
       this.getIssuedPromissoryNotes();
+      this.setState({active:false});
       console.log('Connected to the node.');
     };
     const onClose = () => { console.log('Disconnected from node.'); };
@@ -185,7 +199,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.connectToBraid(9003);
+    this.connectToBraid(9005);
   }
   
   async getIssuedPromissoryNotes() {
@@ -226,6 +240,10 @@ class App extends Component {
   render() {
     return (
       <Container className="App" style={{ marginTop: '3em', marginBottom: '3em' }}>
+        <Dimmer.Dimmable as={Segment} dimmed={this.state.active}>
+          <Dimmer active={this.state.active} inverted>
+            <Loader>Connecting</Loader>
+          </Dimmer>
         <Image.Group size='small'>
           <Image src="static/cordalogo.png" />
           <Image src="static/aplogo.png" />
@@ -237,10 +255,12 @@ class App extends Component {
           <Dropdown
             onChange={((event, data) => {
               console.log('switching to node: ' + JSON.stringify(data.value));
+              this.setState({active:true});
+              this.setState({contractText:seedMarkdown(data.value)});
               this.connectToBraid(data.value);
             })}
-            options={CORDA_NODES}
-            defaultValue={CORDA_NODES[0].value}
+            options={nodesTable}
+            defaultValue={nodesTable[1].value}
           />
         </Header>
         <div>
@@ -263,26 +283,28 @@ class App extends Component {
               Notes Records
             </Menu.Item>
           </Menu>
-           <Segment>
-             { this.state.issuing ?
-               <div>
-                 { this.state.loading ?
-                   <Button fluid
-                           color='red'>Talking to the node...</Button> :
-                   <Button fluid
-                           color='red'
-                           onClick = {(() => this.issuePromissoryNotesJSON())}>Sign & Issue</Button> }
-                 <PromissoryNoteEditor
-                   lockText={false}
-                   initialMarkdown={ this.state.contractText }
-                   onChange={(value,contractText) => { this.setState({ contractText }); }}
-                   onParse={(jsonData) => { this.setState({ jsonData: JSON.stringify(jsonData) }); }}
-                   showParse={true}
-                 />
-               </div> : issuedPane(this.state.promissoryNotesIssued, this.state.owner)
-             }
-           </Segment>
+          { !this.state.active ?
+            <Segment>
+              { this.state.issuing?
+                <div>
+                  { this.state.loading ?
+                    <Button fluid
+                            color='red'>Talking to the node...</Button> :
+                    <Button fluid
+                            color='red'
+                            onClick = {(() => this.issuePromissoryNotesJSON())}>Sign & Issue</Button> }
+                  <PromissoryNoteEditor
+                    lockText={false}
+                    initialMarkdown={ this.state.contractText }
+                    onChange={(value,contractText) => { this.setState({ contractText }); }}
+                    onParse={(jsonData) => { this.setState({ jsonData: JSON.stringify(jsonData) }); }}
+                    showParse={true}
+                  />
+                </div> : issuedPane(this.state.promissoryNotesIssued, this.state.owner)
+              }
+            </Segment> : <Segment></Segment> }
         </div>
+        </Dimmer.Dimmable>
       </Container>
     );
   }
