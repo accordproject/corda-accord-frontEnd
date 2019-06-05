@@ -1,8 +1,8 @@
 const initialMarkdown = (maker) => `# PROMISSORY NOTE
 
-**1000 USD** **06/06/2019**
+On **06/06/2019**
 
-FOR VALUE RECEIVED, the undersigned, **"${maker}"**, an **individual residing** at **"1 Main Street"** (“Maker”), hereby promises to pay to the order of **"R3 LLC"**, a **CORP**, having offices at **"11 West 42nd Street, 8th Floor, New York, NY 10036"**, or its successors and permitted assigns (“Lender” or the “Company”), the principal sum of **500 USD**, plus any and all interest accrued thereon at the Note Rate (defined below), each due and payable in cash in lawful money of the United States on the dates and in the manner set forth in this Promissory Note (this “Note”).
+FOR VALUE RECEIVED, the undersigned, **"${maker}"**, an **individual residing** at **"1 Main Street"** (“Maker”), hereby promises to pay to the order of **"R3 LLC"**, a **CORP**, having offices at **"11 West 42nd Street, 8th Floor, New York, NY 10036"**, or its successors and permitted assigns (“Lender” or the “Company”), the principal sum of **1000 USD**, plus any and all interest accrued thereon at the Note Rate (defined below), each due and payable in cash in lawful money of the United States on the dates and in the manner set forth in this Promissory Note (this “Note”).
 
 ## Interest.
 

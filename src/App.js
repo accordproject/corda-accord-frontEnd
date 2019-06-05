@@ -20,7 +20,7 @@ import { TemplateLoadingClauseEditor } from '@accordproject/cicero-ui';
 import initialMarkdown from './initialMarkdown';
 import moment from 'moment-mini';
 
-const DEFAULT_TEMPLATE = 'http://localhost:8080/static/promissory-note@0.11.2.cta';
+const DEFAULT_TEMPLATE = 'http://localhost:8080/static/promissory-note@0.12.0.cta';
 const CORDA_NODES = [{key:"O=Notary,L=London,C=GB",text:"O=Notary,L=London,C=GB",value:9003,initialMarkdown:initialMarkdown("Notary")},
                      {key:"O=Daniel,L=NY,C=US",text:"O=Daniel,L=NY,C=US",value:9005,initialMarkdown:initialMarkdown("Daniel")},
                      {key:"O=Clause Inc., L=NY, C=US",text:"O=Clause Inc., L=NY, C=US",value:9007,initialMarkdown:initialMarkdown("Clause Inc.")},
