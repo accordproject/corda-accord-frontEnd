@@ -1,6 +1,12 @@
-const initialMarkdown = (maker) => `# PROMISSORY NOTE
+import moment from 'moment-mini';
 
-On **06/06/2019**
+const today = moment().format('MM/DD/YYYY');
+const sixMonths = moment().add(6,'months').format('MM/DD/YYYY');
+
+const initialMarkdown = (maker) => {
+  return `# PROMISSORY NOTE
+
+On **${today}**
 
 FOR VALUE RECEIVED, the undersigned, **"${maker}"**, an **individual residing** at **"1 Main Street"** (“Maker”), hereby promises to pay to the order of **"R3 LLC"**, a **CORP**, having offices at **"11 West 42nd Street, 8th Floor, New York, NY 10036"**, or its successors and permitted assigns (“Lender” or the “Company”), the principal sum of **1000 USD**, plus any and all interest accrued thereon at the Note Rate (defined below), each due and payable in cash in lawful money of the United States on the dates and in the manner set forth in this Promissory Note (this “Note”).
 
@@ -10,7 +16,7 @@ The principal amount of this Note shall bear interest at **3.8**% per annum (the
 
 ## Payment of Principal and Interest.
 
-The principal amount of this Note and the interest thereon shall be due and payable in full on the earlier of (a) **10/20/2019** or (b) ten (10) days prior to the Company filing an S-1 registration statement with the U.S. Securities and Exchange Commission in contemplation of an initial public offering (“IPO”). As used herein, IPO means the closing of a firm commitment underwritten public offering pursuant to a registration statement under the Securities Act of 1933, as amended.
+The principal amount of this Note and the interest thereon shall be due and payable in full on the earlier of (a) **${sixMonths}** or (b) ten (10) days prior to the Company filing an S-1 registration statement with the U.S. Securities and Exchange Commission in contemplation of an initial public offering (“IPO”). As used herein, IPO means the closing of a firm commitment underwritten public offering pursuant to a registration statement under the Securities Act of 1933, as amended.
 
 ## Prepayment.
 
@@ -58,5 +64,6 @@ This Note may be executed in counterparts, each of which shall constitute an ori
 This Note may not be assigned and/or transferred in whole or in part by the Maker without the prior written consent of the Lender, which consent shall be in the Lender’s sole and absolute discretion. This Note may be assigned and/or transferred in whole or in part by the Lender at any time. The obligations of the Maker hereunder shall bind his heirs and permitted assigns, and all rights, benefits and privileges conferred on the Lender by this Note shall be and hereby are extended to, conferred upon, and may be enforced by, the successors and assigns of the Lender.
 
 IN WITNESS WHEREOF, the Maker has executed this Note as of the date and year first above written.`;
+}
 
 export default initialMarkdown;

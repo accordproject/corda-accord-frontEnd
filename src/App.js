@@ -32,6 +32,11 @@ const seedMarkdown = (port) => {
   }).initialMarkdown;
 };
 const nodesTable = CORDA_NODES.map((element) => { return { key: element.key, text: element.text, value: element.value }; });
+const interestsAmount = (data) => {
+  const days = moment(data.MaturityDate).diff(moment(data.IssuedOn), 'days');
+  const amount = data.AmountQuantity * (1.0 + (data.InterestRate / 100.0) / 365 * days);
+  return `${Math.round( amount * 100 + Number.EPSILON ) / 100} ${data.AmountToken}`;
+};
 
 /**
  * A demo component that uses TemplateLoadingClauseEditor
@@ -95,15 +100,16 @@ const issuedPane = (issued, owner) => {
       <Table celled color="green" key="owed" compact='very'>
         <Table.Header fullWidth>
           <Table.Row>
-            <Table.HeaderCell colSpan='5'>Owed</Table.HeaderCell>
+            <Table.HeaderCell colSpan='6'>Owed</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>By</Table.HeaderCell>
-            <Table.HeaderCell>Principal</Table.HeaderCell>
             <Table.HeaderCell>Issued</Table.HeaderCell>
+            <Table.HeaderCell>Principal Amount</Table.HeaderCell>
             <Table.HeaderCell>Maturity</Table.HeaderCell>
+            <Table.HeaderCell>Amount at Maturity</Table.HeaderCell>
             <Table.HeaderCell>Contract Text</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -115,9 +121,10 @@ const issuedPane = (issued, owner) => {
                 const id = data.LinearId;
                 return <Table.Row key={id}>
                          <Table.Cell>{data.MakerCordaParty}</Table.Cell>
-                         <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
                          <Table.Cell>{formatDate(data.IssuedOn)}</Table.Cell>
+                         <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
                          <Table.Cell>{formatDate(data.MaturityDate)}</Table.Cell>
+                         <Table.Cell>{interestsAmount(data)}</Table.Cell>
                          <Table.Cell>{AttachmentModal(data.ContractText, data.IssuedOn)}</Table.Cell>
                        </Table.Row>;
               } else {
@@ -130,15 +137,16 @@ const issuedPane = (issued, owner) => {
       <Table celled color="red" key="due" compact='very'>
         <Table.Header fullWidth>
           <Table.Row>
-            <Table.HeaderCell colSpan='5'>Due</Table.HeaderCell>
+            <Table.HeaderCell colSpan='6'>Due</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>To</Table.HeaderCell>
-            <Table.HeaderCell>Principal</Table.HeaderCell>
             <Table.HeaderCell>Issued</Table.HeaderCell>
+            <Table.HeaderCell>Principal Amount</Table.HeaderCell>
             <Table.HeaderCell>Maturity</Table.HeaderCell>
+            <Table.HeaderCell>Amount at Maturity</Table.HeaderCell>
             <Table.HeaderCell>Contract Text</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -150,9 +158,10 @@ const issuedPane = (issued, owner) => {
                 const id = data.LinearId;
                 return <Table.Row key={id}>
                          <Table.Cell>{data.LenderCordaParty}</Table.Cell>
-                         <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
                          <Table.Cell>{formatDate(data.IssuedOn)}</Table.Cell>
+                         <Table.Cell>{data.AmountQuantity + ' ' + data.AmountToken}</Table.Cell>
                          <Table.Cell>{formatDate(data.MaturityDate)}</Table.Cell>
+                         <Table.Cell>{interestsAmount(data)}</Table.Cell>
                          <Table.Cell>{AttachmentModal(data.ContractText, data.IssuedOn)}</Table.Cell>
                        </Table.Row>;
               } else {
