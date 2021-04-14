@@ -10,7 +10,7 @@
   "dependencies": {
     "@accordproject/cicero-core": "0.12.3",
     "@accordproject/cicero-ui": "0.0.11",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "babel-runtime": "^6.26.0",
     "braid": "0.0.1",
     "braid-client": "^3.3.1-20181219142722288",
