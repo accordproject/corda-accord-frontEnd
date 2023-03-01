@@ -8,8 +8,8 @@
   },
   "private": true,
   "dependencies": {
-    "@accordproject/cicero-core": "0.12.3",
-    "@accordproject/cicero-ui": "0.0.11",
+    "@accordproject/cicero-core": "0.24.0",
+    "@accordproject/cicero-ui": "0.92.2",
     "axios": "^0.21.1",
     "babel-runtime": "^6.26.0",
     "braid": "0.0.1",
